@@ -97,13 +97,13 @@ int main(int argc, char *argv[])
 
     QCommandLineParser parser;
     parser.setApplicationDescription(
-        QObject::tr("Chronometrage pour la diffusion : ecrit l'heure, un compte a "
-                    "rebours et un chronometre dans des fichiers texte lus par OBS."));
+        QObject::tr("Chronométrage pour la diffusion : écrit l'heure, un compte à "
+                    "rebours et un chronomètre dans des fichiers texte lus par OBS."));
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addPositionalArgument(
         QObject::tr("programme"),
-        QObject::tr("Fichier .timerproject a ouvrir au demarrage (facultatif)."));
+        QObject::tr("Fichier .timerproject à ouvrir au démarrage (facultatif)."));
     parser.process(app);
 
     MainWindow window;

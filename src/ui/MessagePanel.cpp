@@ -96,7 +96,7 @@ QWidget* MessagePanel::buildMessageTab()
     templateButtons->addWidget(btnRemoveTemplate);
     templateLayout->addLayout(templateButtons);
 
-    auto* templateHint = new QLabel(tr("Double-cliquez un modèle pour le charger."), templateBox);
+    auto* templateHint = new QLabel(tr("Double-cliquez sur un modèle pour le charger."), templateBox);
     templateHint->setStyleSheet("color: #777777;");
     templateLayout->addWidget(templateHint);
     layout->addWidget(templateBox);
@@ -116,7 +116,7 @@ QWidget* MessagePanel::buildAnnouncementTab()
 
     auto* hint = new QLabel(
         tr("Les annonces tournent automatiquement dans annonce.txt. "
-           "Double-cliquez une ligne pour la modifier."), page);
+           "Double-cliquez sur une ligne pour la modifier."), page);
     hint->setWordWrap(true);
     hint->setStyleSheet("color: #777777;");
     layout->addWidget(hint);
