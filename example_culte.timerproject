@@ -1,0 +1,13 @@
+{
+  "name": "Culte du dimanche matin",
+  "startTime": "10:00",
+  "autoStart": true,
+  "phases": [
+    { "name": "Accueil",       "duration": "00:05:00", "overtimeEnabled": true },
+    { "name": "Louange",       "duration": "00:25:00", "overtimeEnabled": true },
+    { "name": "Annonces",      "duration": "00:07:00", "overtimeEnabled": true },
+    { "name": "Offrande",      "duration": "00:08:00", "overtimeEnabled": true },
+    { "name": "Prédication",   "duration": "00:45:00", "overtimeEnabled": true },
+    { "name": "Prière finale", "duration": "00:10:00", "overtimeEnabled": true }
+  ]
+}

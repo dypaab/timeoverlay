@@ -1,0 +1,12 @@
+# Les scripts shell doivent garder des fins de ligne LF, meme clones depuis
+# Windows : un build.sh en CRLF echoue sous Linux avec un message qui ne dit
+# pas pourquoi. Le projet s'est deja fait prendre.
+*.sh text eol=lf
+
+# Le fichier .desktop est lu par les bureaux Linux, meme regle.
+*.desktop text eol=lf
+
+# Le reste : normalisation en LF dans le depot, fins de ligne natives en local.
+* text=auto
+
+*.png binary

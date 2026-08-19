@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=TimeOverlay
+GenericName=Chronometrage pour la diffusion
+Comment=Horloge, compte a rebours et chronometre ecrits dans des fichiers texte pour OBS
+Exec=TimeOverlay
+Icon=TimeOverlay
+Terminal=false
+Categories=AudioVideo;Utility;
+Keywords=obs;stream;chronometre;minuteur;horloge;culte;
+StartupNotify=true
