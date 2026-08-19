@@ -1,33 +1,34 @@
-TIMEOVERLAY - INSTALLATION
+﻿TIMEOVERLAY — INSTALLATION
 Version 2.3.0
 
-Chronometrage de culte pour OBS : affiche l'heure, un compte a rebours et le
-temps de depassement dans des fichiers texte que les sources Texte d'OBS
+Chronométrage de culte pour OBS : affiche l'heure, un compte à rebours et le
+temps de dépassement dans des fichiers texte que les sources Texte d'OBS
 lisent et affichent.
 
 
 ===============================================================================
-1. OU TELECHARGER
+1. OÙ TÉLÉCHARGER
 ===============================================================================
 
 Toutes les versions sont sur la page des publications :
 
     https://github.com/dypaab/timeoverlay/releases
 
-Prenez la version la plus recente, en haut de la page. Les fichiers sont sous
-le titre "Assets". Il y en a trois : choisissez UN SEUL, selon votre systeme.
+Prenez la version la plus récente, en haut de la page. Les fichiers sont sous
+le titre « Assets ». Il y en a trois : choisissez-en UN SEUL, selon votre
+système.
 
 
-   VOTRE SYSTEME                        LE FICHIER A PRENDRE
+   VOTRE SYSTÈME                        LE FICHIER À PRENDRE
    ---------------------------------    ---------------------------------
    Windows 10 ou 11                     TimeOverlay-Windows-x64.zip
-   Ubuntu 22.04 ou plus recent          timeoverlay_2.3.0_amd64.deb
-   Debian 12 ou plus recent             timeoverlay_2.3.0_amd64.deb
+   Ubuntu 22.04 ou plus récent          timeoverlay_2.3.0_amd64.deb
+   Debian 12 ou plus récent             timeoverlay_2.3.0_amd64.deb
    Une autre distribution Linux         TimeOverlay-x86_64.AppImage
    (Fedora, Arch, Mint, openSUSE...)
 
 
-Lien direct vers la derniere version, si vous preferez :
+Lien direct vers la dernière version, si vous préférez :
 
     https://github.com/dypaab/timeoverlay/releases/latest
 
@@ -36,58 +37,58 @@ Lien direct vers la derniere version, si vous preferez :
 2. INSTALLATION SOUS WINDOWS
 ===============================================================================
 
-Il n'y a pas d'installateur, et c'est voulu : rien n'est ecrit dans le
-systeme, aucun droit administrateur n'est demande.
+Il n'y a pas d'installateur, et c'est voulu : rien n'est écrit dans le
+système, aucun droit administrateur n'est demandé.
 
-  1. Telechargez TimeOverlay-Windows-x64.zip
+  1. Téléchargez TimeOverlay-Windows-x64.zip
 
-  2. Faites un clic droit sur le fichier > Extraire tout...
+  2. Faites un clic droit sur le fichier, puis « Extraire tout... »
 
      ATTENTION : extrayez vraiment l'archive. Si vous double-cliquez sur le
-     ZIP et lancez TimeOverlay.exe depuis l'apercu de Windows, l'application
-     ne trouvera pas ses bibliotheques et ne demarrera pas.
+     ZIP et lancez TimeOverlay.exe depuis l'aperçu de Windows, l'application
+     ne trouvera pas ses bibliothèques et ne démarrera pas.
 
      Mettez le dossier obtenu quelque part de stable : Documents, ou la racine
-     du disque. Pas dans le dossier Telechargements, qu'on vide un jour sans y
+     du disque. Pas dans le dossier Téléchargements, qu'on vide un jour sans y
      penser.
 
   3. Ouvrez le dossier et double-cliquez sur TimeOverlay.exe
 
-  4. Windows affiche peut-etre un ecran bleu "Windows a protege votre
-     ordinateur". C'est normal : le programme n'est pas signe par un
-     certificat payant. Cliquez sur "Informations complementaires", puis sur
-     "Executer quand meme".
+  4. Windows affiche peut-être un écran bleu « Windows a protégé votre
+     ordinateur ». C'est normal : le programme n'est pas signé par un
+     certificat payant. Cliquez sur « Informations complémentaires », puis sur
+     « Exécuter quand même ».
 
-  5. Pour le lancer plus facilement ensuite : clic droit sur TimeOverlay.exe >
-     Envoyer vers > Bureau (creer un raccourci).
+  5. Pour le lancer plus facilement ensuite : clic droit sur TimeOverlay.exe,
+     puis « Envoyer vers » et « Bureau (créer un raccourci) ».
 
-Pour desinstaller : supprimez le dossier. C'est tout.
+Pour désinstaller : supprimez le dossier. C'est tout.
 
 
 ===============================================================================
 3. INSTALLATION SOUS UBUNTU OU DEBIAN (le paquet .deb)
 ===============================================================================
 
-  1. Telechargez timeoverlay_2.3.0_amd64.deb
+  1. Téléchargez timeoverlay_2.3.0_amd64.deb
 
-  2. Ouvrez un terminal dans le dossier de telechargement et tapez :
+  2. Ouvrez un terminal dans le dossier de téléchargement et tapez :
 
          sudo apt install ./timeoverlay_2.3.0_amd64.deb
 
-     Le "./" au debut est indispensable : sans lui, apt cherche un paquet de
+     Le « ./ » au début est indispensable : sans lui, apt cherche un paquet de
      ce nom sur internet au lieu de votre fichier.
 
-     N'utilisez PAS "sudo dpkg -i". dpkg n'installe pas les dependances, et
-     l'application ne demarrerait pas.
+     N'utilisez PAS « sudo dpkg -i ». dpkg n'installe pas les dépendances, et
+     l'application ne démarrerait pas.
 
-  3. TimeOverlay apparait dans votre menu d'applications.
+  3. TimeOverlay apparaît dans votre menu d'applications.
      Vous pouvez aussi le lancer depuis un terminal avec :  TimeOverlay
 
-Pour desinstaller :
+Pour désinstaller :
 
          sudo apt remove timeoverlay
 
-Pour installer une version plus recente, reprenez simplement la commande
+Pour installer une version plus récente, reprenez simplement la commande
 d'installation avec le nouveau fichier : elle remplace l'ancienne.
 
 
@@ -97,29 +98,29 @@ d'installation avec le nouveau fichier : elle remplace l'ancienne.
 
 Une AppImage est un fichier unique qui contient tout. Rien ne s'installe.
 
-  1. Telechargez TimeOverlay-x86_64.AppImage
+  1. Téléchargez TimeOverlay-x86_64.AppImage
 
-  2. Rendez le fichier executable. En ligne de commande :
+  2. Rendez le fichier exécutable. En ligne de commande :
 
          chmod +x TimeOverlay-x86_64.AppImage
 
-     Ou avec la souris : clic droit > Proprietes > Permissions > cochez
-     "Autoriser l'execution du fichier comme un programme".
+     Ou avec la souris : clic droit, « Propriétés », onglet « Permissions »,
+     puis cochez « Autoriser l'exécution du fichier comme un programme ».
 
   3. Double-cliquez dessus, ou lancez :
 
          ./TimeOverlay-x86_64.AppImage
 
-  4. Rangez le fichier a un endroit stable AVANT de l'utiliser vraiment. Si
-     vous le deplacez plus tard, le lancement automatique au demarrage
+  4. Rangez le fichier à un endroit stable AVANT de l'utiliser vraiment. Si
+     vous le déplacez plus tard, le lancement automatique au démarrage
      cherchera l'ancien emplacement et ne trouvera plus rien.
 
-Il faut glibc 2.35 ou plus recent (Ubuntu 22.04 et equivalents).
-Si l'AppImage refuse de demarrer, installez FUSE :
+Il faut glibc 2.35 ou plus récent (Ubuntu 22.04 et équivalents).
+Si l'AppImage refuse de démarrer, installez FUSE :
 
          sudo apt install libfuse2
 
-Pour desinstaller : supprimez le fichier.
+Pour désinstaller : supprimez le fichier.
 
 
 ===============================================================================
@@ -128,36 +129,37 @@ Pour desinstaller : supprimez le fichier.
 
 Deux choses se passent toutes seules.
 
-  - L'application s'inscrit au demarrage de votre session. Elle affiche
-    l'heure et le decompte avant le culte : elle ne sert a rien si personne ne
-    pense a l'ouvrir. Pour desactiver : menu Outils > Parametres, decochez
-    "Lancer TimeOverlay au demarrage de l'ordinateur". Une fois decochee, la
-    case n'est jamais recochee toute seule.
+  - L'application s'inscrit au démarrage de votre session. Elle affiche
+    l'heure et le décompte avant le culte : elle ne sert à rien si personne ne
+    pense à l'ouvrir. Pour désactiver : menu Outils, puis Paramètres, et
+    décochez « Lancer TimeOverlay au démarrage de l'ordinateur ». Une fois
+    décochée, la case n'est jamais recochée toute seule.
 
-  - Un dossier de sortie est cree. C'est la que sont ecrits les fichiers que
+  - Un dossier de sortie est créé. C'est là que sont écrits les fichiers que
     vous allez pointer depuis OBS :
 
         Linux    ~/.local/share/TimeOverlay/obs/
         Windows  %APPDATA%\TimeOverlay\obs\
 
-Une seule copie de l'application peut tourner a la fois. Deux copies
-ecriraient dans les memes fichiers et OBS afficherait des valeurs
-incoherentes. Si un message vous dit que TimeOverlay est deja ouvert,
-cherchez-le dans la barre des taches.
+Une seule copie de l'application peut tourner à la fois. Deux copies
+écriraient dans les mêmes fichiers et OBS afficherait des valeurs
+incohérentes. Si un message vous dit que TimeOverlay est déjà ouvert,
+cherchez-le dans la barre des tâches.
 
 
 ===============================================================================
 6. BRANCHER OBS
 ===============================================================================
 
-Le plus simple : dans TimeOverlay, cliquez sur le bouton "Chemins OBS". La
-fenetre reste ouverte pendant que vous configurez OBS, vous copiez les chemins
+Le plus simple : dans TimeOverlay, cliquez sur le bouton « Chemins OBS ». La
+fenêtre reste ouverte pendant que vous configurez OBS, vous copiez les chemins
 un par un.
 
-Puis, dans OBS, pour chaque valeur a afficher :
+Puis, dans OBS, pour chaque valeur à afficher :
 
-  1. Sources > + > Texte (GDI+) sous Windows, Texte (FreeType 2) sous Linux
-  2. Cochez "Lire depuis un fichier"
+  1. Sources, puis +, puis « Texte (GDI+) » sous Windows ou
+     « Texte (FreeType 2) » sous Linux
+  2. Cochez « Lire depuis un fichier »
   3. Collez le chemin du fichier voulu
 
 Les fichiers disponibles :
@@ -165,59 +167,64 @@ Les fichiers disponibles :
     heure.txt            l'heure courante
     date.txt             la date
     countdown.txt        le temps restant sur la phase en cours
-    countup.txt          le temps ecoule
-    depassement.txt      le temps en trop, une fois zero atteint
-    avant_debut.txt      le decompte avant le debut du culte
+    countup.txt          le temps écoulé
+    depassement.txt      le temps en trop, une fois zéro atteint
+    avant_debut.txt      le décompte avant le début du culte
     phase.txt            le nom de la phase en cours
-    phase_suivante.txt   le nom de la phase d'apres
+    phase_suivante.txt   le nom de la phase d'après
     statut.txt           EN_COURS, PAUSE, DEPASSEMENT...
-    message.txt          un mot ponctuel a l'intervenant
-    annonce.txt          les annonces qui defilent
+    message.txt          un mot ponctuel à l'intervenant
+    annonce.txt          les annonces qui défilent
 
-LE TRUC A CONNAITRE : depassement.txt reste VIDE tant que la phase ne deborde
-pas, et une source Texte vide n'affiche rien dans OBS. Creez donc une source
+LE TRUC À CONNAÎTRE : depassement.txt reste VIDE tant que la phase ne déborde
+pas, et une source Texte vide n'affiche rien dans OBS. Créez donc une source
 en rouge, en gros, pointant sur ce fichier : elle restera invisible tout le
-culte et apparaitra seule au moment ou l'orateur depasse. Aucun script,
-aucune condition a ecrire.
+culte et apparaîtra seule au moment où l'orateur dépasse. Aucun script, aucune
+condition à écrire.
 
-Meme principe pour avant_debut.txt, qui se vide des que le culte demarre.
+Même principe pour avant_debut.txt, qui se vide dès que le culte démarre.
+
+Les noms de ces fichiers sont volontairement sans accent : ils sont recopiés
+dans OBS, dans des scripts et parfois à la main. Un « é » dans un nom de
+fichier finit tôt ou tard par se transformer en autre chose au passage d'un
+système à l'autre.
 
 
 ===============================================================================
 7. SI QUELQUE CHOSE NE VA PAS
 ===============================================================================
 
-L'application ne demarre pas sous Linux, message
-"Could not find the Qt platform plugin xcb"
-    Le greffon d'affichage de Qt manque. Il est declare par le paquet .deb,
-    donc cela n'arrive que si vous avez installe avec "dpkg -i" au lieu de
-    "apt install ./". Reprenez avec apt, ou installez le greffon :
+L'application ne démarre pas sous Linux, message
+« Could not find the Qt platform plugin xcb »
+    Le greffon d'affichage de Qt manque. Il est déclaré par le paquet .deb,
+    donc cela n'arrive que si vous avez installé avec « dpkg -i » au lieu de
+    « apt install ./ ». Reprenez avec apt, ou installez le greffon :
         sudo apt install qt6-qpa-plugins
 
-L'application ne demarre pas sous Windows, message sur une DLL manquante
-    L'archive n'a pas ete extraite : vous lancez l'exe depuis l'apercu du
-    ZIP. Extrayez le dossier puis relancez.
+L'application ne démarre pas sous Windows, message sur une DLL manquante
+    L'archive n'a pas été extraite : vous lancez l'exécutable depuis l'aperçu
+    du ZIP. Extrayez le dossier, puis relancez.
 
 OBS n'affiche rien
-    Verifiez que la source Texte pointe bien sur le fichier et que
-    "Lire depuis un fichier" est coche. Ouvrez ensuite le dossier de sortie
-    (menu Affichage > Ouvrir le dossier de sortie) et regardez si les
+    Vérifiez que la source Texte pointe bien sur le fichier et que « Lire
+    depuis un fichier » est coché. Ouvrez ensuite le dossier de sortie (menu
+    Affichage, puis « Ouvrir le dossier de sortie ») et regardez si les
     fichiers changent quand un minuteur tourne.
 
-OBS affiche des valeurs qui sautent d'une seconde a l'autre
-    Deux copies de TimeOverlay tournent en meme temps. Fermez-en une.
+OBS affiche des valeurs qui sautent d'une seconde à l'autre
+    Deux copies de TimeOverlay tournent en même temps. Fermez-en une.
 
 Les dates s'affichent en anglais
-    L'application suit la langue du systeme. Reglez la langue de votre session
-    en francais, ou changez le format dans Outils > Parametres.
+    L'application suit la langue du système. Réglez la langue de votre session
+    en français, ou changez le format dans Outils, puis Paramètres.
 
-Le mode d'emploi complet est dans l'application : menu Aide > Mode d'emploi,
-ou la touche F1. Ses liens ouvrent directement l'ecran concerne.
+Le mode d'emploi complet est dans l'application : menu Aide, « Mode d'emploi »,
+ou la touche F1. Ses liens ouvrent directement l'écran concerné.
 
 
 ===============================================================================
-8. COMPILER SOI-MEME
+8. COMPILER SOI-MÊME
 ===============================================================================
 
-Le code source est dans ce depot. La marche a suivre, pour Linux comme pour
+Le code source est dans ce dépôt. La marche à suivre, pour Linux comme pour
 Windows, est dans le fichier README.md.
