@@ -42,13 +42,30 @@ continue de progresser. Affichez celui des trois qui vous convient.
 Modifiable dans **Outils → Paramètres**. Le menu **Affichage → Ouvrir le
 dossier de sortie** vous y emmène directement.
 
+## Télécharger
+
+Les binaires prêts à l'emploi sont sur la
+**[page des publications](https://github.com/dypaab/timeoverlay/releases/latest)**.
+
+| Votre système | Le fichier |
+|---|---|
+| Windows 10 / 11 | `TimeOverlay-Windows-x64.zip` |
+| Ubuntu 22.04+, Debian 12+ | `timeoverlay_<version>_amd64.deb` |
+| Autre distribution Linux | `TimeOverlay-x86_64.AppImage` |
+
+La marche à suivre pas à pas, y compris pour quelqu'un qui n'ouvre jamais un
+terminal, est dans **[INSTALLATION.txt](INSTALLATION.txt)**.
+
 ## Installation
 
 ### Ubuntu et Debian — le paquet `.deb` (recommandé)
 
 ```bash
-sudo apt install ./timeoverlay_2.2.0_amd64.deb
+sudo apt install ./timeoverlay_2.3.0_amd64.deb
 ```
+
+Le `./` est indispensable : sans lui, `apt` cherche un paquet de ce nom sur
+internet. Ne pas utiliser `dpkg -i`, qui n'installe pas les dépendances.
 
 `apt` installe Qt tout seul. L'application apparaît ensuite dans le menu des
 applications, avec son icône, et se lance aussi depuis un terminal :
