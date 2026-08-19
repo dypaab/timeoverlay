@@ -1,0 +1,21 @@
+# Produits de compilation
+build/
+build-*/
+dist/
+*.o
+*.obj
+*.a
+
+# Livrables : ils sont attaches aux versions publiees, pas suivis dans le
+# depot. Un binaire de 30 Mo par version rendrait le clone inutilisable.
+*.zip
+*.deb
+*.AppImage
+*.exe
+
+# Fichiers d'editeurs et de systeme
+.vscode/
+.idea/
+*.user
+.DS_Store
+Thumbs.db

@@ -1,0 +1,21 @@
+{
+  "name": "Soutenance ENSICAEN",
+  "phases": [
+    {
+      "name": "Introduction",
+      "duration": "00:05:00"
+    },
+    {
+      "name": "Entreprise",
+      "duration": "00:10:00"
+    },
+    {
+      "name": "Projet",
+      "duration": "00:15:00"
+    },
+    {
+      "name": "Questions",
+      "duration": "00:10:00"
+    }
+  ]
+}
