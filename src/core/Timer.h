@@ -58,8 +58,12 @@ public:
     // Secondes ecoulees au-dela de zero, zero tant qu'on ne depasse pas.
     int overtimeSeconds() const;
 
-    QString countdown() const;   // "00:04:31", "00:00:00" une fois a zero
-    QString overtime() const;    // "+00:01:22", vide tant qu'on ne depasse pas
+    // Le compte a rebours s'EFFACE une fois passe zero : dans OBS, les deux
+    // sources sont souvent superposees au meme endroit, et un "00:00:00" fige
+    // restait affiche sous le temps de depassement. Une phase reglee pour
+    // s'arreter net, elle, garde son "00:00:00" -- rien ne vient le remplacer.
+    QString countdown() const;   // "00:04:31", vide une fois en depassement
+    QString overtime() const;    // "-00:01:22", vide tant qu'on ne depasse pas
     QString countup() const;     // temps ecoule depuis le demarrage
 
     static QString format(qint64 totalSeconds);
@@ -89,4 +93,10 @@ private:
     qint64 elapsedMs() const;
     void setState(State s);
     void onTick();
+
+    // A-t-on franchi zero ? Un seul point de verite pour les deux affichages :
+    // le compte a rebours s'efface exactement quand le depassement apparait,
+    // sans quoi l'ecran resterait vide une seconde, ou les deux se
+    // superposeraient. Reste vrai en pause apres un depassement.
+    bool isPastZero() const;
 };

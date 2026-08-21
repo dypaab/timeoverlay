@@ -177,16 +177,36 @@ bool Timer::parseDuration(const QString& text, int* outSeconds)
     return true;
 }
 
+bool Timer::isPastZero() const
+{
+    // L'etat OVERTIME compte des la premiere fraction de seconde : sans lui,
+    // il s'ecoulerait une seconde entiere ou le compte a rebours serait deja
+    // efface et le depassement pas encore affiche -- un trou noir a l'ecran,
+    // pile au moment ou l'orateur doit conclure.
+    //
+    // Le test numerique, lui, couvre la pause : une phase mise en pause
+    // pendant un depassement n'est plus dans l'etat OVERTIME, mais elle est
+    // bien au-dela de zero et doit continuer a l'afficher.
+    //
+    // Une phase reglee pour s'arreter net finit en FINISHED avec un temps
+    // ecoule fige sur la duree exacte : elle n'est donc jamais "past zero",
+    // et garde son 00:00:00.
+    return m_state == State::OVERTIME || overtimeSeconds() > 0;
+}
+
 QString Timer::countdown() const
 {
+    // Efface une fois zero franchi : la source Texte d'OBS devient vide et
+    // n'affiche plus rien, laissant la place au temps de depassement pose au
+    // meme endroit.
+    if (isPastZero()) return QString();
     return format(remainingSeconds());
 }
 
 QString Timer::overtime() const
 {
-    const int over = overtimeSeconds();
-    if (over <= 0) return QString();
-    return QStringLiteral("+") + format(over);
+    if (!isPastZero()) return QString();
+    return QStringLiteral("-") + format(overtimeSeconds());
 }
 
 QString Timer::countup() const

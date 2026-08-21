@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.20)
-# 2.3.0 : bibliotheque de programmes (enregistrement automatique, historique),
-#         invite d'enregistrement en quittant, lancement au demarrage de la
-#         session, aide integree, overlay deplacable sous Wayland.
-project(TimeOverlay VERSION 2.3.0 LANGUAGES CXX)
+# 2.4.0 : le compte a rebours s'efface une fois zero franchi et le depassement
+#         est signe en negatif, pour que les deux sources puissent etre
+#         superposees au meme endroit dans OBS. Demande venue d'un usage reel
+#         en direct : le 00:00:00 fige restait affiche sous le depassement.
+project(TimeOverlay VERSION 2.4.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

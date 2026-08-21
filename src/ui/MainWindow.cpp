@@ -962,7 +962,13 @@ void MainWindow::onQuickTick(QString countdown, QString overtime, Timer::State s
     m_output.clear(OutputEngine::PhaseSuivante);
 
     const QColor color = m_colors.colorFor(m_quickTimer.remainingSeconds(), inOvertime);
-    setBigDisplay(inOvertime && !overtime.isEmpty() ? overtime : countdown, color);
+
+    // Le compte a rebours est vide une fois zero franchi : on affiche celui
+    // des deux qui porte une valeur. Tester l'etat OVERTIME ne suffirait pas,
+    // une pause pendant un depassement n'est plus dans cet etat et laisserait
+    // l'ecran vide.
+    const QString valeur = overtime.isEmpty() ? countdown : overtime;
+    setBigDisplay(valeur, color);
 
     m_phaseLabel->setText(tr("Minuteur rapide"));
     m_nextLabel->clear();
@@ -971,7 +977,7 @@ void MainWindow::onQuickTick(QString countdown, QString overtime, Timer::State s
                                     PhaseManager::stateLabel(state)));
 
     if (m_overlay) {
-        m_overlay->setTimerText(inOvertime && !overtime.isEmpty() ? overtime : countdown);
+        m_overlay->setTimerText(valeur);
         m_overlay->setColor(color);
     }
 
@@ -1149,7 +1155,10 @@ void MainWindow::onPhaseTick(QString countdown, QString overtime, Timer::State s
     // le debut du culte ressemble a une alarme. On reste neutre.
     const QColor color = phaseActive ? m_colors.colorFor(remaining, inOvertime)
                                      : m_colors.normalColor();
-    setBigDisplay(inOvertime && !overtime.isEmpty() ? overtime : countdown, color);
+
+    // Voir onQuickTick : on affiche celui des deux qui porte une valeur.
+    const QString valeur = overtime.isEmpty() ? countdown : overtime;
+    setBigDisplay(valeur, color);
 
     if (phaseActive) {
         m_statusLabel->setText(tr("Phase %1/%2 - %3")
@@ -1162,7 +1171,7 @@ void MainWindow::onPhaseTick(QString countdown, QString overtime, Timer::State s
     }
 
     if (m_overlay) {
-        m_overlay->setTimerText(inOvertime && !overtime.isEmpty() ? overtime : countdown);
+        m_overlay->setTimerText(valeur);
         m_overlay->setColor(color);
     }
 

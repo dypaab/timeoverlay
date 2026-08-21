@@ -106,14 +106,26 @@ temps : démarrer l'un met l'autre en pause, et la barre d'état vous le dit.</p
 
 <p class="chemin">Dossier actuel : %1</p>
 
-<h3>Le fichier de dépassement</h3>
+<h3>Superposer le compte à rebours et le dépassement</h3>
 
 <p><code>depassement.txt</code> reste <b>vide</b> tant que la phase ne déborde
 pas, et une source Texte vide n'affiche rien dans OBS. Créez donc une source en
 rouge pointant dessus : elle restera invisible tout le culte et apparaîtra
-seule au moment du dépassement, sans script ni condition à écrire. Même
-principe pour <code>avant_debut.txt</code>, qui se vide dès que le culte
-démarre.</p>
+seule au moment du dépassement, sans script ni condition à écrire.</p>
+
+<p>Au même instant, <code>countdown.txt</code> <b>se vide</b>. Vous pouvez donc
+poser les deux sources exactement au même endroit de l'écran : elles se
+relaient, sans jamais se superposer. Le dépassement s'affiche en négatif —
+<code>-00:01:22</code>.</p>
+
+<p>Deux exceptions à connaître. Une phase réglée pour <b>s'arrêter net</b>
+garde son <code>00:00:00</code> : rien ne viendrait le remplacer. Et si une de
+vos scènes n'affiche <i>que</i> le compte à rebours, elle deviendra vide en cas
+de dépassement — pointez-y plutôt <code>countup.txt</code>, qui ne se vide
+jamais.</p>
+
+<p>Même principe d'effacement pour <code>avant_debut.txt</code>, qui se vide
+dès que le culte démarre.</p>
 
 <h2><a name="messages"></a>4. Messages et annonces</h2>
 

@@ -19,18 +19,32 @@ dépassement en même temps, chacun dans sa propre source Texte d'OBS.
 | `avant_debut.txt` | Décompte avant le début du culte — `00:12:34`, vide une fois démarré |
 | `heure.txt` | Heure courante — `10:42:07` |
 | `date.txt` | Date courante — `dimanche 17 août 2026` |
-| `countdown.txt` | Temps restant sur la phase — `00:04:31` |
+| `countdown.txt` | Temps restant sur la phase — `00:04:31`, **vide une fois zéro atteint** |
 | `countup.txt` | Temps écoulé sur la phase, continue au-delà de la durée prévue |
-| `depassement.txt` | `+00:01:22` uniquement en cas de dépassement, vide sinon |
+| `depassement.txt` | `-00:01:22` uniquement en cas de dépassement, vide sinon |
 | `phase.txt` | Nom de la phase en cours — `Prédication` |
 | `phase_suivante.txt` | Nom de la phase suivante |
 | `statut.txt` | `EN_COURS`, `PAUSE`, `DEPASSEMENT`, `TERMINE` |
 | `message.txt` | Message libre tapé par l'opérateur pendant le culte |
 | `annonce.txt` | Annonce en cours de rotation |
 
-**Quand le compte à rebours atteint zéro, il se met à monter** : `countdown.txt`
-reste à `00:00:00`, `depassement.txt` affiche `+00:00:14` et `countup.txt`
-continue de progresser. Affichez celui des trois qui vous convient.
+**Quand le compte à rebours atteint zéro, le relais est passé** : `countdown.txt`
+**se vide**, `depassement.txt` affiche `-00:00:14` et `countup.txt` continue de
+progresser.
+
+Le compte à rebours se vide pour une raison précise : en régie, on superpose
+souvent les deux sources au même endroit de l'écran. Tant que `countdown.txt`
+gardait `00:00:00`, ce zéro figé restait affiché sous le temps de dépassement.
+Maintenant l'un s'efface exactement quand l'autre apparaît, sans script ni
+condition dans OBS.
+
+> Une phase réglée pour **s'arrêter net** (dépassement décoché) garde son
+> `00:00:00` : rien ne vient le remplacer, et un écran vide n'annoncerait pas
+> la fin.
+>
+> Si l'une de vos scènes n'affiche **que** le compte à rebours, elle deviendra
+> vide en cas de dépassement. Pointez-y plutôt `countup.txt`, qui ne se vide
+> jamais.
 
 ### Où sont écrits ces fichiers
 

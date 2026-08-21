@@ -166,9 +166,9 @@ Les fichiers disponibles :
 
     heure.txt            l'heure courante
     date.txt             la date
-    countdown.txt        le temps restant sur la phase en cours
+    countdown.txt        le temps restant, VIDE une fois zéro atteint
     countup.txt          le temps écoulé
-    depassement.txt      le temps en trop, une fois zéro atteint
+    depassement.txt      le temps en trop, une fois zéro atteint (-00:01:22)
     avant_debut.txt      le décompte avant le début du culte
     phase.txt            le nom de la phase en cours
     phase_suivante.txt   le nom de la phase d'après
@@ -181,6 +181,14 @@ pas, et une source Texte vide n'affiche rien dans OBS. Créez donc une source
 en rouge, en gros, pointant sur ce fichier : elle restera invisible tout le
 culte et apparaîtra seule au moment où l'orateur dépasse. Aucun script, aucune
 condition à écrire.
+
+Et comme countdown.txt se vide au même instant, vous pouvez poser les deux
+sources exactement au même endroit de l'écran : elles se relaient sans jamais
+se superposer.
+
+Attention si une de vos scènes n'affiche QUE le compte à rebours : elle
+deviendra vide en cas de dépassement. Pointez-y plutôt countup.txt, qui ne se
+vide jamais.
 
 Même principe pour avant_debut.txt, qui se vide dès que le culte démarre.
 

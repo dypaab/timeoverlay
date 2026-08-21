@@ -342,6 +342,28 @@ static void waitMs(int ms)
     loop.exec();
 }
 
+static void testPhaseQuiSarreteNet()
+{
+    QTextStream(stdout) << "\n[Phase qui s'arrete net]\n";
+
+    // Contrepartie de l'effacement du compte a rebours : une phase dont le
+    // depassement est decoche n'a RIEN pour prendre le relais. Si elle
+    // s'effacait aussi, l'ecran deviendrait vide au lieu d'annoncer la fin.
+    Timer timer(QStringLiteral("Net"), 1);
+    timer.setOvertimeEnabled(false);
+    timer.start();
+    waitMs(1600);
+
+    check(timer.state() == Timer::State::FINISHED,
+          "la phase s'arrete au lieu de basculer en depassement");
+    check(timer.countdown() == QStringLiteral("00:00:00"),
+          "elle garde son 00:00:00 : rien ne vient le remplacer",
+          QStringLiteral("\"%1\"").arg(timer.countdown()));
+    check(timer.overtime().isEmpty(),
+          "aucun depassement n'est affiche",
+          QStringLiteral("\"%1\"").arg(timer.overtime()));
+}
+
 static void testSchedule()
 {
     QTextStream(stdout) << "\n[Heure de debut du culte]\n";
@@ -494,11 +516,17 @@ private slots:
               "le minuteur est passe en depassement apres zero");
         check(m_overtimeSignalSeen,
               "le signal de debut de depassement a bien ete emis");
-        check(m_timer->countdown() == QStringLiteral("00:00:00"),
-              "le compte a rebours reste a zero et ne devient pas negatif",
-              m_timer->countdown());
-        check(m_timer->overtime().startsWith('+'),
-              "le depassement compte a la hausse",
+        // Dans OBS, le compte a rebours et le depassement sont souvent poses
+        // au meme endroit. Un 00:00:00 fige restait affiche sous le temps de
+        // depassement : le compte a rebours doit donc s'effacer.
+        check(m_timer->countdown().isEmpty(),
+              "le compte a rebours s'efface une fois zero franchi",
+              QStringLiteral("\"%1\"").arg(m_timer->countdown()));
+        check(m_timer->remainingSeconds() == 0,
+              "le temps restant reste a zero et ne devient pas negatif",
+              QString::number(m_timer->remainingSeconds()));
+        check(m_timer->overtime().startsWith('-'),
+              "le depassement est signe en negatif",
               m_timer->overtime());
         check(m_timer->elapsedSeconds() >= 3,
               "le temps ecoule continue de progresser au-dela de la duree prevue",
@@ -539,10 +567,11 @@ private slots:
         QTextStream(stdout) << "\n[Independance des fichiers]\n";
         check(heure == QStringLiteral("10:42:07"),
               "heure.txt n'a PAS ete efface par le minuteur", heure);
-        check(countdown == QStringLiteral("00:00:00"),
-              "countdown.txt contient le compte a rebours", countdown);
-        check(depassement.startsWith('+'),
-              "depassement.txt contient le temps en trop", depassement);
+        check(countdown.isEmpty(),
+              "countdown.txt est vide pendant le depassement, il ne se superpose pas",
+              QStringLiteral("\"%1\"").arg(countdown));
+        check(depassement.startsWith('-'),
+              "depassement.txt contient le temps en trop, signe en negatif", depassement);
         check(!countup.isEmpty() && countup != QStringLiteral("00:00:00"),
               "countup.txt monte independamment", countup);
 
@@ -575,6 +604,7 @@ int main(int argc, char* argv[])
     testDurationParsing();
     testProfileModification();
     testProgrammeLibrary();
+    testPhaseQuiSarreteNet();
     testSessionRecording();
     testSchedule();
 

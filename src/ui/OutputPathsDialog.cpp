@@ -32,9 +32,10 @@ QVector<Sortie> sorties()
         { OutputEngine::Heure,
           QObject::tr("Heure courante — 10:42:07") },
         { OutputEngine::Countdown,
-          QObject::tr("Temps restant. Se fige à 00:00:00, ne devient jamais négatif.") },
+          QObject::tr("Temps restant. SE VIDE une fois zéro atteint, pour laisser la "
+                      "place au dépassement si vous les superposez.") },
         { OutputEngine::Depassement,
-          QObject::tr("Temps en trop — +00:01:22. VIDE tant qu'on ne dépasse pas, "
+          QObject::tr("Temps en trop — -00:01:22. VIDE tant qu'on ne dépasse pas, "
                       "donc invisible dans OBS jusqu'au dépassement.") },
         { OutputEngine::Countup,
           QObject::tr("Temps écoulé depuis le début. Continue de monter après zéro, "

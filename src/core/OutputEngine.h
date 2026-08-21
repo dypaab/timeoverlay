@@ -29,7 +29,7 @@ public:
     static const QString Date;           // 2026-08-16
     static const QString Countdown;      // 00:04:31  (temps restant)
     static const QString Countup;        // 00:12:05  (temps ecoule de la phase)
-    static const QString Depassement;    // +00:01:22 (vide tant qu'on ne depasse pas)
+    static const QString Depassement;    // -00:01:22 (vide tant qu'on ne depasse pas)
     static const QString Statut;         // EN_COURS / PAUSE / DEPASSEMENT ...
     static const QString Phase;          // "Prédication"
     static const QString PhaseSuivante;  // "Annonces"
