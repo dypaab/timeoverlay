@@ -342,6 +342,41 @@ static void waitMs(int ms)
     loop.exec();
 }
 
+static void testJamaisLesDeuxEnsemble()
+{
+    QTextStream(stdout) << "\n[Compte a rebours et depassement : jamais ensemble]\n";
+
+    // Les deux sources OBS sont posees au meme endroit de l'ecran. La regle
+    // qu'elles imposent est absolue : a tout instant, une seule des deux
+    // valeurs porte du texte. Ce test l'echantillonne de part et d'autre de
+    // zero, y compris pendant la seconde du basculement.
+    Timer timer(QStringLiteral("Exclusion"), 2);
+    timer.start();
+
+    int mesures = 0;
+    int fautes = 0;
+    int vuAvant = 0;
+    int vuApres = 0;
+
+    for (int i = 0; i < 35; ++i) {
+        waitMs(100);
+        const bool rebours = !timer.countdown().isEmpty();
+        const bool depassement = !timer.overtime().isEmpty();
+
+        ++mesures;
+        if (rebours && depassement) ++fautes;   // superposition
+        if (!rebours && !depassement) ++fautes; // trou noir a l'ecran
+        if (rebours) ++vuAvant;
+        if (depassement) ++vuApres;
+    }
+
+    check(fautes == 0,
+          "sur 35 mesures, exactement une des deux valeurs est affichee",
+          QStringLiteral("%1 faute(s) sur %2").arg(fautes).arg(mesures));
+    check(vuAvant > 0, "le compte a rebours a bien ete vu avant zero");
+    check(vuApres > 0, "le depassement a bien ete vu apres zero");
+}
+
 static void testPhaseQuiSarreteNet()
 {
     QTextStream(stdout) << "\n[Phase qui s'arrete net]\n";
@@ -604,6 +639,7 @@ int main(int argc, char* argv[])
     testDurationParsing();
     testProfileModification();
     testProgrammeLibrary();
+    testJamaisLesDeuxEnsemble();
     testPhaseQuiSarreteNet();
     testSessionRecording();
     testSchedule();
