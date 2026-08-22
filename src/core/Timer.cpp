@@ -111,6 +111,40 @@ void Timer::reset()
     onTick();
 }
 
+void Timer::resumeAt(int elapsedSeconds, bool running)
+{
+    m_ticker.stop();
+    m_elapsed.invalidate();
+    m_accumulatedMs = qBound(qint64(0),
+                             qint64(elapsedSeconds) * 1000,
+                             qint64(kMaxDurationSeconds) * 1000);
+
+    // Zero a peut-etre ete franchi pendant l'absence. On marque l'evenement
+    // comme deja emis pour que la reprise ne declenche ni finished(), ni
+    // l'alarme de fin de phase : elle a deja sonne, ou n'avait pas a sonner.
+    const bool passeZero = m_accumulatedMs >= m_durationMs;
+    m_finishedEmitted = passeZero;
+
+    if (!running) {
+        setState(State::PAUSED);
+        onTick();
+        return;
+    }
+
+    if (passeZero && !m_overtimeEnabled) {
+        // Phase reglee pour s'arreter net : elle etait deja terminee.
+        m_accumulatedMs = m_durationMs;
+        setState(State::FINISHED);
+        onTick();
+        return;
+    }
+
+    m_elapsed.start();
+    m_ticker.start();
+    setState(passeZero ? State::OVERTIME : State::RUNNING);
+    onTick();
+}
+
 int Timer::elapsedSeconds() const
 {
     return int(elapsedMs() / 1000);

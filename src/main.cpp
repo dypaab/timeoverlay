@@ -113,7 +113,11 @@ int main(int argc, char *argv[])
     // au-dessus d'une fenetre deja visible.
     const QStringList positional = parser.positionalArguments();
     if (!positional.isEmpty()) {
+        // Un fichier passe en argument est une intention explicite : elle
+        // l'emporte sur une reprise de seance.
         window.openProgrammeFile(positional.first());
+    } else {
+        window.proposeSessionRestore();
     }
 
     return app.exec();

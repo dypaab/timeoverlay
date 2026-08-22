@@ -37,6 +37,15 @@ public:
     void pause();
     void reset();
 
+    // Repart avec un temps deja ecoule, au lieu de partir de zero.
+    //
+    // Sert a reprendre une phase apres une fermeture accidentelle : le temps
+    // ecoule est reconstitue depuis l'heure reelle de demarrage, et la phase
+    // repart exactement ou elle en etait -- y compris deja en depassement.
+    // finished() n'est pas reemis : la phase n'a pas fini une seconde fois,
+    // et l'alarme de fin ne doit pas sonner au rechargement.
+    void resumeAt(int elapsedSeconds, bool running);
+
     // Ajuste la duree en cours de route. Indispensable en regie :
     // "laisse-lui deux minutes de plus" sans casser le decompte.
     void addSeconds(int delta);

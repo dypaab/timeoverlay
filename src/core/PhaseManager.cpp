@@ -134,6 +134,25 @@ void PhaseManager::goToPhase(int index)
     }
 }
 
+void PhaseManager::resumePhase(int index, int durationSeconds, int elapsedSeconds, bool running)
+{
+    if (!hasPhase(index)) return;
+
+    m_currentIndex = index;
+    const Phase& phase = m_profile.phases[index];
+
+    m_timer->setDuration(durationSeconds > 0 ? durationSeconds : phase.durationSeconds);
+    m_timer->setOvertimeEnabled(phase.overtimeEnabled);
+
+    // La date de debut est reconstituee, pas relevee maintenant : le compte
+    // rendu de seance doit porter l'heure a laquelle la phase a reellement
+    // commence, avant la fermeture.
+    m_currentPhaseStartedAt = QDateTime::currentDateTime().addSecs(-elapsedSeconds);
+
+    emit phaseChanged(index, phase.name, m_timer->durationSeconds());
+    m_timer->resumeAt(elapsedSeconds, running);
+}
+
 void PhaseManager::addSecondsToCurrentPhase(int delta)
 {
     if (!hasPhase(m_currentIndex)) return;

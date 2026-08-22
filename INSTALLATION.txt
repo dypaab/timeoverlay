@@ -141,6 +141,11 @@ Deux choses se passent toutes seules.
         Linux    ~/.local/share/TimeOverlay/obs/
         Windows  %APPDATA%\TimeOverlay\obs\
 
+SI LE LOGICIEL SE FERME PAR ACCIDENT EN PLEIN CULTE : rouvrez-le simplement.
+Il propose de reprendre la phase en cours, au bon endroit. Le temps a continué
+de courir pendant l'absence, comme le culte lui-même. Répondez « Reprendre »,
+ou « Repartir de zéro » si vous préférez.
+
 Une seule copie de l'application peut tourner à la fois. Deux copies
 écriraient dans les mêmes fichiers et OBS afficherait des valeurs
 incohérentes. Si un message vous dit que TimeOverlay est déjà ouvert,

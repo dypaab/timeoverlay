@@ -35,6 +35,12 @@ public:
     void previousPhase();
     void goToPhase(int index);
 
+    // Reprend une phase la ou elle en etait, apres une fermeture accidentelle.
+    // La duree est passee explicitement : elle a pu etre ajustee en direct
+    // avec « + 1 min », et c'est cette duree-la qu'il faut retrouver, pas
+    // celle du programme enregistre.
+    void resumePhase(int index, int durationSeconds, int elapsedSeconds, bool running);
+
     // Ajoute du temps a la phase en cours sans casser le decompte.
     void addSecondsToCurrentPhase(int delta);
 

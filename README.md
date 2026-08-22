@@ -211,6 +211,32 @@ copie pas les bibliothèques du compilateur.
    comparant le prévu au réel, phase par phase. De quoi ajuster le programme
    de la semaine suivante.
 
+## Si le logiciel se ferme en plein culte
+
+Un clic de trop sur la croix, une coupure de courant, un plantage : à la
+réouverture, TimeOverlay **propose de reprendre là où vous en étiez**.
+
+> TimeOverlay s'est fermé il y a 19 secondes, pendant « Louange ».
+> Le culte, lui, a continué : cette phase en est maintenant à 00:00:19 sur
+> 00:25:00. **Reprendre là où vous en étiez ?**
+
+Le point important est dans la deuxième phrase : **le temps continue de courir
+pendant l'absence du logiciel**. Le prédicateur n'a pas fait de pause parce
+qu'une fenêtre s'est fermée. C'est l'heure de début de phase qui est
+enregistrée, pas un compteur de secondes — le temps écoulé se recalcule donc
+sur l'horloge, et reste juste quelle que soit la durée de la coupure.
+
+Une phase qui était **en pause** garde son temps figé : là, le culte était
+réellement suspendu.
+
+Sont restitués : le programme, la phase en cours, le temps écoulé, et la durée
+ajustée si vous aviez utilisé `+ 1 min`. Rien ne redémarre tout seul — la
+question vous est posée, et « Repartir de zéro » reste à un clic.
+
+Au-delà de **deux heures**, la proposition n'apparaît plus : il ne s'agit plus
+d'un incident mais d'un autre jour. Le minuteur libre, lui, n'est pas restitué :
+c'est un compte à rebours ponctuel, qu'un clic suffit à relancer.
+
 ## Vos programmes et leur historique
 
 `Programme → Mes programmes` (ou le bouton **Mes programmes**) ouvre la liste

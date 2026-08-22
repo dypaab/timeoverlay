@@ -24,6 +24,7 @@
 #include "core/ServiceSchedule.h"
 #include "core/ProgrammeLibrary.h"
 #include "core/PhaseManager.h"
+#include "core/SessionState.h"
 #include "utils/PathUtils.h"
 
 static int g_failures = 0;
@@ -377,6 +378,133 @@ static void testJamaisLesDeuxEnsemble()
     check(vuApres > 0, "le depassement a bien ete vu apres zero");
 }
 
+static void testRepriseApresFermeture()
+{
+    QTextStream(stdout) << "\n[Reprise apres une fermeture accidentelle]\n";
+
+    QTemporaryDir dossier;
+    const QString chemin = QDir(dossier.path()).filePath(QStringLiteral("session.json"));
+
+    // --- une phase qui tournait : le culte a continue sans nous ---
+    {
+        SessionState session;
+        session.profilePath = QStringLiteral("/un/programme.timerproject");
+        session.profileName = QStringLiteral("Culte");
+        session.phaseIndex = 2;
+        session.phaseName = QStringLiteral("Predication");
+        session.phaseDurationSeconds = 2700;
+        // Phase demarree il y a 10 minutes, application fermee il y a 30 s.
+        session.phaseStartedAt = QDateTime::currentDateTime().addSecs(-600);
+        session.frozenElapsedSeconds = -1;
+        session.savedAt = QDateTime::currentDateTime().addSecs(-30);
+
+        QString erreur;
+        check(session.save(chemin, &erreur), "l'etat de reprise s'enregistre", erreur);
+
+        const SessionState relu = SessionState::load(chemin);
+        check(relu.isValid(), "il se relit depuis le disque");
+        check(relu.phaseIndex == 2 && relu.phaseName == QStringLiteral("Predication"),
+              "la phase en cours est retrouvee");
+        check(relu.phaseDurationSeconds == 2700,
+              "la duree ajustee est conservee");
+        check(relu.isRunning(), "la phase est reconnue comme en cours");
+
+        // Le point central : le temps ecoule se recalcule sur l'horloge, il ne
+        // reprend pas la ou l'enregistrement l'avait laisse.
+        const int ecoule = relu.elapsedSecondsNow();
+        check(ecoule >= 598 && ecoule <= 602,
+              "le temps ecoule a continue de courir pendant l'absence",
+              QStringLiteral("%1 s au lieu de ~600").arg(ecoule));
+    }
+
+    // --- une phase en pause : le temps devait rester fige ---
+    {
+        SessionState session;
+        session.profilePath = QStringLiteral("/un/programme.timerproject");
+        session.phaseIndex = 0;
+        session.phaseDurationSeconds = 600;
+        session.phaseStartedAt = QDateTime::currentDateTime().addSecs(-900);
+        session.frozenElapsedSeconds = 120;   // suspendue a 2 minutes
+        session.savedAt = QDateTime::currentDateTime().addSecs(-60);
+        session.save(chemin, nullptr);
+
+        const SessionState relu = SessionState::load(chemin);
+        check(!relu.isRunning(), "une phase suspendue est reconnue comme telle");
+        check(relu.elapsedSecondsNow() == 120,
+              "son temps reste fige : le culte etait reellement arrete",
+              QString::number(relu.elapsedSecondsNow()));
+    }
+
+    // --- une seance d'un autre jour ne doit pas etre proposee ---
+    {
+        // Le fichier est ecrit a la main : save() estampille toujours l'heure
+        // courante, et c'est voulu. On ne peut donc pas fabriquer une vieille
+        // seance en passant par lui.
+        const QDateTime hier = QDateTime::currentDateTime().addSecs(-86400);
+        const QString json = QStringLiteral(
+            "{\"profilePath\":\"/un/programme.timerproject\",\"phaseIndex\":1,"
+            "\"phaseStartedAt\":\"%1\",\"frozenElapsed\":-1,\"savedAt\":\"%1\"}")
+            .arg(hier.toString(Qt::ISODate));
+
+        QFile fichier(chemin);
+        fichier.open(QIODevice::WriteOnly);
+        fichier.write(json.toUtf8());
+        fichier.close();
+
+        const SessionState relu = SessionState::load(chemin);
+        check(relu.isValid(), "la seance d'hier se relit correctement");
+        check(relu.secondsSinceSaved() > SessionState::kMaxAgeSeconds,
+              "une seance vieille d'un jour depasse le delai de reprise",
+              QStringLiteral("%1 s").arg(relu.secondsSinceSaved()));
+    }
+
+    // --- un etat incomplet ne doit pas etre pris pour bon ---
+    {
+        SessionState::discard(chemin);
+        check(!SessionState::load(chemin).isValid(),
+              "un fichier absent ne donne pas d'etat valide");
+
+        QFile fichier(chemin);
+        fichier.open(QIODevice::WriteOnly);
+        fichier.write("{ pas du json");
+        fichier.close();
+        check(!SessionState::load(chemin).isValid(),
+              "un fichier corrompu ne donne pas d'etat valide");
+    }
+}
+
+static void testMinuteurRepris()
+{
+    QTextStream(stdout) << "\n[Minuteur repris en cours de route]\n";
+
+    // Phase de 10 s reprise a 4 s : il doit rester 6 s, pas 10.
+    Timer timer(QStringLiteral("Repris"), 10);
+    timer.resumeAt(4, true);
+    check(timer.state() == Timer::State::RUNNING, "la phase repart en decompte");
+    const int restant = timer.remainingSeconds();
+    check(restant >= 5 && restant <= 6,
+          "le temps restant tient compte du temps deja ecoule",
+          QString::number(restant));
+
+    // Zero franchi pendant l'absence : on revient directement en depassement.
+    Timer depasse(QStringLiteral("Depasse"), 10);
+    depasse.resumeAt(25, true);
+    check(depasse.state() == Timer::State::OVERTIME,
+          "une phase deja depassee revient en depassement");
+    check(depasse.countdown().isEmpty(),
+          "son compte a rebours est vide, comme il se doit");
+    check(depasse.overtime() == QStringLiteral("-00:00:15"),
+          "le depassement affiche le bon retard",
+          depasse.overtime());
+
+    // Une phase qui s'arrete net et dont l'heure etait passee : terminee.
+    Timer nette(QStringLiteral("Nette"), 10);
+    nette.setOvertimeEnabled(false);
+    nette.resumeAt(25, true);
+    check(nette.state() == Timer::State::FINISHED,
+          "une phase sans depassement revient a l'etat termine");
+}
+
 static void testPhaseQuiSarreteNet()
 {
     QTextStream(stdout) << "\n[Phase qui s'arrete net]\n";
@@ -640,6 +768,8 @@ int main(int argc, char* argv[])
     testProfileModification();
     testProgrammeLibrary();
     testJamaisLesDeuxEnsemble();
+    testRepriseApresFermeture();
+    testMinuteurRepris();
     testPhaseQuiSarreteNet();
     testSessionRecording();
     testSchedule();

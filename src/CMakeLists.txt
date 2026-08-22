@@ -11,6 +11,7 @@ add_library(timeoverlay_core STATIC
     core/MessageCenter.cpp
     core/ServiceSchedule.cpp
     core/ProgrammeLibrary.cpp
+    core/SessionState.cpp
 
     utils/CSVExporter.cpp
     utils/PathUtils.cpp

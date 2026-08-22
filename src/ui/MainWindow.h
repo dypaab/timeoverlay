@@ -41,6 +41,12 @@ public:
     // Renvoie false et affiche l'erreur si le fichier est inutilisable.
     bool openProgrammeFile(const QString& path);
 
+    // Propose de reprendre le culte la ou il en etait, si l'application s'est
+    // fermee en pleine phase il y a peu. Renvoie true si la reprise a eu lieu.
+    // Appelee depuis main() apres show(), pour que la question s'affiche
+    // au-dessus d'une fenetre deja visible.
+    bool proposeSessionRestore();
+
 protected:
     void closeEvent(QCloseEvent *event) override;
     void showEvent(QShowEvent *event) override;
@@ -121,6 +127,11 @@ private:
     // zero : remettre a zero en plein culte est une correction, pas la fin
     // d'une seance.
     void recordSessionHistory();
+
+    // Enregistre ou efface l'etat de reprise. Appelee aux trois seuls moments
+    // qui comptent -- changement de phase, changement d'etat, ajustement de
+    // duree -- puisque le temps ecoule se reconstitue ensuite sur l'horloge.
+    void saveSessionState();
 
     // Etat metier
     Clock m_clock{QStringLiteral("Horloge")};

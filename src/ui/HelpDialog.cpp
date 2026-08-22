@@ -93,6 +93,18 @@ automatiquement — c'est vous qui décidez.</p>
 qu'OBS n'ait pas à être reconfiguré. Ils ne peuvent donc pas tourner en même
 temps : démarrer l'un met l'autre en pause, et la barre d'état vous le dit.</p>
 
+<h3>Si le logiciel se ferme par accident</h3>
+
+<p>Rouvrez-le : il propose de <b>reprendre là où vous en étiez</b>, avec le
+programme, la phase et le temps écoulé. Et le temps a bien <b>continué de
+courir</b> pendant l'absence — le prédicateur n'a pas fait de pause parce
+qu'une fenêtre s'est fermée. Une phase qui était en pause, elle, garde son
+temps figé.</p>
+
+<p>Rien ne redémarre tout seul : la question vous est posée, et
+« Repartir de zéro » reste à un clic. Passé deux heures, la proposition
+n'apparaît plus.</p>
+
 <h2><a name="obs"></a>3. Brancher OBS</h2>
 
 <p>Dans OBS, ajoutez une source <b>Texte (GDI+)</b>, cochez

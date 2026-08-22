@@ -6,6 +6,7 @@
 #include "OutputPathsDialog.h"
 #include "ProgrammeLibraryDialog.h"
 #include "HelpDialog.h"
+#include "../core/SessionState.h"
 #include "../utils/CSVExporter.h"
 #include "../utils/Autostart.h"
 
@@ -313,6 +314,12 @@ void MainWindow::wireSignals()
     connect(&m_phases, &PhaseManager::phaseFinished, this, &MainWindow::onPhaseFinished);
     connect(&m_phases, &PhaseManager::allPhasesFinished, this, &MainWindow::onAllPhasesFinished);
 
+    // Un changement d'etat -- demarrage, pause, passage en depassement, arret
+    // -- est le seul instant ou l'etat de reprise peut devenir faux. Le temps
+    // ecoule, lui, se recalcule sur l'horloge et n'a pas besoin d'etre suivi.
+    connect(&m_phases, &PhaseManager::stateChanged, this,
+            [this](Timer::State) { saveSessionState(); });
+
     connect(&m_schedule, &ServiceSchedule::tick, this, &MainWindow::onScheduleTick);
     connect(&m_schedule, &ServiceSchedule::startTimeReached, this, &MainWindow::onStartTimeReached);
 
@@ -489,6 +496,11 @@ void MainWindow::closeEvent(QCloseEvent *event)
         return;
     }
 
+    // AVANT d'archiver la seance : une fermeture accidentelle passe par ici
+    // comme une fermeture voulue -- un clic de trop sur la croix est le cas
+    // le plus frequent. L'etat de reprise doit donc etre a jour en sortant.
+    saveSessionState();
+
     recordSessionHistory();
 
     // Derniere ecriture avant de rendre la main : les fichiers doivent
@@ -549,6 +561,109 @@ bool MainWindow::confirmSaveIfModified()
     // Si l'enregistrement a echoue, le drapeau est encore leve : on ne ferme
     // pas en silence sur une erreur que l'operateur vient de voir.
     return !m_profileModified;
+}
+
+void MainWindow::saveSessionState()
+{
+    const QString chemin = SessionState::defaultPath();
+    Timer* minuteur = m_phases.timer();
+    const int index = m_phases.currentPhaseIndex();
+
+    // Rien a reprendre : aucune phase en cours, minuteur a l'arret, ou c'est
+    // le minuteur libre qui tient l'affichage. Dans ces cas on efface, sinon
+    // on proposerait de reprendre un culte deja fini.
+    const bool reprenable = index >= 0
+                            && minuteur
+                            && m_countdownOwner != CountdownOwner::Minuteur
+                            && minuteur->state() != Timer::State::STOPPED;
+
+    if (!reprenable || m_profilePath.isEmpty()) {
+        SessionState::discard(chemin);
+        return;
+    }
+
+    const Timer::State etat = minuteur->state();
+    const bool enCours = (etat == Timer::State::RUNNING || etat == Timer::State::OVERTIME);
+
+    SessionState session;
+    session.profilePath = m_profilePath;
+    session.profileName = m_profile.name;
+    session.phaseIndex = index;
+    session.phaseName = m_phases.currentPhaseName();
+    session.phaseDurationSeconds = minuteur->durationSeconds();
+    session.phaseStartedAt = QDateTime::currentDateTime().addSecs(-minuteur->elapsedSeconds());
+    // Une phase suspendue garde son temps fige : le culte etait reellement
+    // arrete, l'horloge murale ne doit pas continuer a courir pour elle.
+    session.frozenElapsedSeconds = enCours ? -1 : minuteur->elapsedSeconds();
+
+    session.save(chemin);
+}
+
+bool MainWindow::proposeSessionRestore()
+{
+    const QString chemin = SessionState::defaultPath();
+    const SessionState session = SessionState::load(chemin);
+
+    if (!session.isValid()) return false;
+
+    if (session.secondsSinceSaved() > SessionState::kMaxAgeSeconds
+        || !QFileInfo::exists(session.profilePath)) {
+        SessionState::discard(chemin);
+        return false;
+    }
+
+    const int ecoule = session.elapsedSecondsNow();
+
+    // Singulier et pluriel ecrits a la main plutot que par la forme %n de Qt :
+    // celle-ci s'appuie sur le catalogue de traduction, qui n'est pas toujours
+    // trouve, et retombe alors sur un disgracieux « 19 seconde(s) ».
+    const int absenceSecondes = session.secondsSinceSaved();
+    QString absence;
+    if (absenceSecondes < 60) {
+        absence = absenceSecondes <= 1 ? tr("il y a une seconde")
+                                       : tr("il y a %1 secondes").arg(absenceSecondes);
+    } else {
+        const int minutes = absenceSecondes / 60;
+        absence = minutes <= 1 ? tr("il y a une minute")
+                               : tr("il y a %1 minutes").arg(minutes);
+    }
+
+    QMessageBox box(QMessageBox::Question, tr("Reprendre le culte en cours ?"),
+                    tr("TimeOverlay s'est fermé %1, pendant « %2 ».\n\n"
+                       "Le culte, lui, a continué : cette phase en est maintenant à "
+                       "%3 sur %4.\n\n"
+                       "Reprendre là où vous en étiez ?")
+                        .arg(absence, session.phaseName,
+                             Timer::format(ecoule),
+                             Timer::format(session.phaseDurationSeconds)),
+                    QMessageBox::NoButton, this);
+
+    QPushButton* reprendre = box.addButton(tr("Reprendre"), QMessageBox::AcceptRole);
+    box.addButton(tr("Repartir de zéro"), QMessageBox::RejectRole);
+    box.setDefaultButton(reprendre);
+    box.exec();
+
+    if (box.clickedButton() != reprendre) {
+        // Refus explicite : on efface, sans quoi la question reviendrait au
+        // lancement suivant.
+        SessionState::discard(chemin);
+        return false;
+    }
+
+    if (!openProgrammeFile(session.profilePath)) {
+        SessionState::discard(chemin);
+        return false;
+    }
+
+    m_phases.resumePhase(session.phaseIndex, session.phaseDurationSeconds,
+                         ecoule, session.isRunning());
+    // Le culte a commencé : le décompte d'avant début n'a plus lieu d'être.
+    m_schedule.markStarted();
+    refreshDisplay();
+
+    statusBar()->showMessage(
+        tr("Reprise de « %1 » à %2").arg(session.phaseName, Timer::format(ecoule)), 10000);
+    return true;
 }
 
 void MainWindow::recordSessionHistory()
@@ -852,8 +967,10 @@ void MainWindow::onStartPause()
 
 void MainWindow::onNextPhase()      { m_phases.nextPhase(); }
 void MainWindow::onPreviousPhase()  { m_phases.previousPhase(); }
-void MainWindow::onAddMinute()      { m_phases.addSecondsToCurrentPhase(60); }
-void MainWindow::onRemoveMinute()   { m_phases.addSecondsToCurrentPhase(-60); }
+// La duree ajustee en direct doit survivre a une fermeture accidentelle :
+// c'est celle-la que l'orateur a devant les yeux, pas celle du programme.
+void MainWindow::onAddMinute()      { m_phases.addSecondsToCurrentPhase(60); saveSessionState(); }
+void MainWindow::onRemoveMinute()   { m_phases.addSecondsToCurrentPhase(-60); saveSessionState(); }
 
 void MainWindow::onResetProgramme()
 {
@@ -1201,6 +1318,8 @@ void MainWindow::onPhaseChanged(int index, QString name, int durationSeconds)
 
     CSVExporter::appendLog(QDir(m_output.baseDir()).filePath(QStringLiteral("journal")),
                            QStringLiteral("programme"), QStringLiteral("DEBUT_PHASE"), name);
+
+    saveSessionState();
 }
 
 void MainWindow::onPhaseFinished(int index, QString name)
